@@ -1,0 +1,19 @@
+{
+  "name": "personal_website",
+  "version": "1.0.0",
+  "description": "A personal website powered by Firebase Hosting",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "mkdir -p dist && cp -R public/* dist/",
+    "start": "serve -s dist"
+  },
+  "keywords": ["personal website", "firebase", "static site"],
+  "author": "Vikyath",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "firebase": "^11.2.0"
+  },
+  "devDependencies": {}
+}
