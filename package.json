@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "mkdir -p dist && cp -R public/* dist/",
-    "start": "serve -s dist"
+    "start": "serve -s dist",
+    "deploy": "npm run build && firebase deploy",
+    "serve": "firebase serve"
   },
   "keywords": ["personal website", "firebase", "static site"],
   "author": "Vikyath",
@@ -15,5 +17,8 @@
   "dependencies": {
     "firebase": "^11.2.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "firebase-tools": "^13.0.0",
+    "serve": "^14.0.0"
+  }
 }
