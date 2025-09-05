@@ -1,0 +1,65 @@
+{
+  "education": [
+    {
+      "school": "University of Southern California",
+      "degree": "M.S. Computer Science (AI)",
+      "years": "2024–2026",
+      "details": [
+        "Focus on Artificial Intelligence and Machine Learning",
+        "Relevant Coursework: Deep Learning, Natural Language Processing, Computer Vision",
+        "GPA: 3.9/4.0"
+      ]
+    },
+    {
+      "school": "Previous University",
+      "degree": "B.S. Computer Science",
+      "years": "2020–2024",
+      "details": [
+        "Graduated Summa Cum Laude",
+        "Major GPA: 3.95/4.0",
+        "Dean's List all semesters"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "company": "Interdependent Studios",
+      "role": "AI Engineering Intern",
+      "years": "2025—Present",
+      "bullets": [
+        "Built React/TypeScript site with GraphQL + Supabase backend",
+        "Automated creative pipeline reducing turnaround time by 45%",
+        "Implemented AI-powered content generation tools",
+        "Collaborated with cross-functional teams on product development"
+      ]
+    },
+    {
+      "company": "Tech Startup",
+      "role": "Full-Stack Developer Intern",
+      "years": "2024—2024",
+      "bullets": [
+        "Developed responsive web applications using React and Node.js",
+        "Integrated third-party APIs and payment processing systems",
+        "Optimized database queries improving performance by 30%",
+        "Participated in agile development processes and code reviews"
+      ]
+    },
+    {
+      "company": "Research Lab",
+      "role": "Research Assistant",
+      "years": "2023—2024",
+      "bullets": [
+        "Conducted research on machine learning interpretability",
+        "Published findings in peer-reviewed conference proceedings",
+        "Developed Python tools for data analysis and visualization",
+        "Mentored undergraduate students on research projects"
+      ]
+    }
+  ],
+  "skills": {
+    "languages": ["Python", "JavaScript/TypeScript", "Java", "C++", "SQL"],
+    "frameworks": ["React", "Next.js", "Node.js", "FastAPI", "PyTorch", "TensorFlow"],
+    "tools": ["Git", "Docker", "AWS", "Firebase", "PostgreSQL", "MongoDB"],
+    "domains": ["Machine Learning", "Web Development", "Data Analysis", "System Design"]
+  }
+}

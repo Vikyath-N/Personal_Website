@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "ai-playground",
+    "title": "AI Playground",
+    "year": 2025,
+    "tags": ["ai", "frontend"],
+    "stack": ["Next.js", "TypeScript", "TensorFlow.js"],
+    "summary": "Client-side vision & NLP mini-demos showcasing AI capabilities in the browser.",
+    "repo": "https://github.com/vikyath/ai-playground",
+    "demo": "/playground",
+    "media": "/media/ai-playground.mp4"
+  },
+  {
+    "slug": "portfolio-site",
+    "title": "Personal Portfolio",
+    "year": 2025,
+    "tags": ["web", "design"],
+    "stack": ["Next.js", "React", "Tailwind CSS", "daisyUI"],
+    "summary": "Modern portfolio site with AI chat integration and interactive features.",
+    "repo": "https://github.com/vikyath/portfolio",
+    "demo": "/",
+    "media": "/media/portfolio.mp4"
+  },
+  {
+    "slug": "research-project",
+    "title": "ML Research Tool",
+    "year": 2024,
+    "tags": ["research", "ml"],
+    "stack": ["Python", "PyTorch", "Streamlit"],
+    "summary": "Research tool for exploring machine learning model interpretability.",
+    "repo": "https://github.com/vikyath/research-tool",
+    "demo": "https://research-demo.com",
+    "media": "/media/research.mp4"
+  }
+]

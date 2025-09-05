@@ -1,0 +1,566 @@
+# cursor-tasks.yaml
+version: 1
+project: ai-portfolio
+description: End-to-end build plan for a polished AI + Full-Stack personal site (Next.js 15, React 19, Tailwind v4, shadcn/ui, daisyUI 5, Firebase).
+defaults:
+  shell: bash
+
+variables:
+  # Fill these before running Firebase-related tasks
+  NEXT_PUBLIC_FIREBASE_API_KEY: "<your-key>"
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: "<your-domain>"
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID: "<your-project-id>"
+  NEXT_PUBLIC_FIREBASE_APP_ID: "<your-app-id>"
+  FIREBASE_PROJECT_ID: "<your-project-id>"
+  FIREBASE_CLIENT_EMAIL: "<service-account-email>"
+  FIREBASE_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\\n...\\n-----END PRIVATE KEY-----\\n"
+
+tasks:
+
+  - id: T0_scaffold
+    name: Scaffold Next.js (App Router, TS)
+    steps:
+      - run: |
+          npx create-next-app@latest ai-portfolio \
+            --ts --eslint --use-npm --app --src-dir --import-alias "@/*"
+          cd ai-portfolio
+      - note: Creates Next 15 project with App Router + TS.
+
+  - id: T1_tailwind_shadcn_daisy
+    name: Tailwind v4 + shadcn/ui + daisyUI 5
+    depends_on: [T0_scaffold]
+    steps:
+      - run: |
+          cd ai-portfolio
+          # Tailwind v4 (if not already present)
+          npm i -D tailwindcss@next @tailwindcss/postcss@next
+          # shadcn/ui CLI
+          npx shadcn@latest init
+          # Core UI libs
+          npm i framer-motion lucide-react clsx
+          # daisyUI 5 (Tailwind v4 plugin syntax is in CSS)
+          npm i -D daisyui
+      - edit:
+          path: app/globals.css
+          replace_or_append: |
+            @import "tailwindcss";
+            @plugin "daisyui";
+            @plugin "daisyui" {
+              themes: light --default, dark --prefersdark;
+              logs: false;
+            }
+      - create:
+          path: components.json
+          content: |
+            {
+              "$schema": "https://ui.shadcn.com/schema.json",
+              "style": "new-york",
+              "rsc": true,
+              "tailwind": {
+                "config": "tailwind.config.ts",
+                "css": "app/globals.css",
+                "baseColor": "zinc",
+                "cssVariables": true
+              },
+              "aliases": {
+                "components": "@/components",
+                "utils": "@/lib/utils",
+                "ui": "@/components/ui",
+                "lib": "@/lib",
+                "hooks": "@/hooks"
+              }
+            }
+      - run: |
+          cd ai-portfolio
+          # Install commonly used shadcn components
+          npx shadcn add card tabs tooltip dialog resizable sheet navbar calendar carousel sonner
+
+  - id: T2_firebase_init
+    name: Firebase (Analytics, Firestore Admin)
+    depends_on: [T1_tailwind_shadcn_daisy]
+    steps:
+      - run: |
+          cd ai-portfolio
+          npm i firebase firebase-admin
+      - create:
+          path: .env.local
+          content: |
+            NEXT_PUBLIC_FIREBASE_API_KEY=${NEXT_PUBLIC_FIREBASE_API_KEY}
+            NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}
+            NEXT_PUBLIC_FIREBASE_PROJECT_ID=${NEXT_PUBLIC_FIREBASE_PROJECT_ID}
+            NEXT_PUBLIC_FIREBASE_APP_ID=${NEXT_PUBLIC_FIREBASE_APP_ID}
+            FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+            FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
+            FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
+      - create:
+          path: lib/firebase.client.ts
+          content: |
+            import { initializeApp, getApps, getApp } from "firebase/app";
+            import { getAnalytics, isSupported, Analytics } from "firebase/analytics";
+            const cfg = {
+              apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
+              authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
+              projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
+              appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!
+            };
+            export const app = getApps().length ? getApp() : initializeApp(cfg);
+            export const analytics: Promise<Analytics|null> =
+              typeof window !== "undefined"
+                ? isSupported().then(s => (s ? getAnalytics(app) : null))
+                : Promise.resolve(null);
+      - create:
+          path: lib/firebase.admin.ts
+          content: |
+            import { getApps, initializeApp, cert } from "firebase-admin/app";
+            import { getFirestore } from "firebase-admin/firestore";
+            if (!getApps().length) {
+              initializeApp({
+                credential: cert({
+                  projectId: process.env.FIREBASE_PROJECT_ID!,
+                  clientEmail: process.env.FIREBASE_CLIENT_EMAIL!,
+                  privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, "\n"),
+                }),
+              });
+            }
+            export const db = getFirestore();
+
+  - id: F1_hero
+    name: Hero section (Stripe/Notion aesthetic)
+    depends_on: [T1_tailwind_shadcn_daisy]
+    steps:
+      - create:
+          path: components/hero.tsx
+          content: |
+            "use client";
+            import { motion, AnimatePresence } from "framer-motion";
+            import { useEffect, useState } from "react";
+            import { Button } from "@/components/ui/button";
+            const ROLES = ["AI Engineer", "Full-Stack Developer", "Researcher"];
+            export default function Hero() {
+              const [i,setI] = useState(0);
+              useEffect(()=>{ const t=setInterval(()=>setI(p=>(p+1)%ROLES.length),2200); return ()=>clearInterval(t)},[]);
+              return (
+                <section className="mx-auto max-w-5xl px-6 py-24">
+                  <h1 className="text-5xl md:text-7xl font-semibold tracking-tight">
+                    Vikyath Naradasi
+                  </h1>
+                  <div className="mt-3 h-10 text-2xl text-muted-foreground">
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={i}
+                        initial={{opacity:0,y:8}}
+                        animate={{opacity:1,y:0}}
+                        exit={{opacity:0,y:-8}}
+                        transition={{duration:0.25}}
+                      >
+                        {ROLES[i]}
+                      </motion.span>
+                    </AnimatePresence>
+                  </div>
+                  <p className="mt-6 max-w-2xl text-balance text-lg text-muted-foreground">
+                    Building delightful AI products with robust systems & polished UX.
+                  </p>
+                  <div className="mt-8 flex gap-3">
+                    <Button asChild><a href="/projects">See Projects</a></Button>
+                    <Button variant="secondary" asChild><a href="/resume">Interactive Résumé</a></Button>
+                    <Button variant="ghost" asChild><a href="/playground">AI Playground</a></Button>
+                  </div>
+                </section>
+              )
+            }
+      - edit:
+          path: app/page.tsx
+          replace_or_append: |
+            import Hero from "@/components/hero";
+            export default function Page(){ return <Hero/> }
+
+  - id: F2_projects
+    name: Projects grid + live demo modal + counters
+    depends_on: [T2_firebase_init]
+    steps:
+      - create:
+          path: content/projects.json
+          content: |
+            [
+              {
+                "slug": "ai-playground",
+                "title": "AI Playground",
+                "year": 2025,
+                "tags": ["ai","frontend"],
+                "stack": ["Next.js","TypeScript","tfjs"],
+                "summary": "Client-side vision & NLP mini-demos.",
+                "repo": "https://github.com/your/repo",
+                "demo": "/playground",
+                "media": "/media/ai-playground.mp4"
+              }
+            ]
+      - create:
+          path: components/projects/project-card.tsx
+          content: |
+            "use client";
+            import { Card } from "@/components/ui/card";
+            import { useState } from "react";
+            export default function ProjectCard({ p }:{ p:any }){
+              const [hover,setHover]=useState(false);
+              return (
+                <Card onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)}
+                  className="group overflow-hidden relative transition will-change-transform">
+                  <div className="p-5 space-y-2">
+                    <h3 className="text-xl font-medium">{p.title}</h3>
+                    <p className="text-muted-foreground">{p.summary}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {p.tags.map((t:string)=>(
+                        <span key={t} className="badge badge-outline">{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                  {p.media && (
+                    <video
+                      className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100 transition"
+                      src={p.media} muted playsInline loop autoPlay />
+                  )}
+                </Card>
+              )
+            }
+      - create:
+          path: app/(site)/projects/page.tsx
+          content: |
+            import data from "@/content/projects.json";
+            import ProjectCard from "@/components/projects/project-card";
+            export const metadata = { title: "Projects" };
+            export default function Projects(){
+              return (
+                <main className="mx-auto max-w-6xl px-6 py-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {data.map((p:any)=> <ProjectCard key={p.slug} p={p} />)}
+                </main>
+              )
+            }
+      - create:
+          path: app/api/project-view/route.ts
+          content: |
+            import { db } from "@/lib/firebase.admin";
+            import { NextResponse } from "next/server";
+            import { FieldValue } from "firebase-admin/firestore";
+            export async function POST(req: Request){
+              const { slug } = await req.json();
+              const ref = db.collection("projectViews").doc(slug);
+              await ref.set({ count: 0 }, { merge: true });
+              await ref.update({ count: FieldValue.increment(1) });
+              return NextResponse.json({ ok: true });
+            }
+
+  - id: F3_resume
+    name: Interactive Résumé (timeline + sheet)
+    depends_on: [T1_tailwind_shadcn_daisy]
+    steps:
+      - create:
+          path: content/resume.json
+          content: |
+            {
+              "education":[{"school":"USC","degree":"M.S. CS (AI)","years":"2024–2026"}],
+              "experience":[
+                {"company":"Interdependent Studios","role":"AI Eng Intern","years":"2025—Present",
+                 "bullets":["Built React/TS site w/ GraphQL + Supabase","Automated creative pipeline (-45% turnaround)"]}
+              ]
+            }
+      - create:
+          path: app/(site)/resume/page.tsx
+          content: |
+            "use client";
+            import json from "@/content/resume.json";
+            import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+            export default function Resume(){
+              return (
+                <main className="mx-auto max-w-4xl px-6 py-16">
+                  <h1 className="text-3xl font-semibold mb-6">Résumé</h1>
+                  <ul className="timeline timeline-vertical">
+                    {json.experience.map((e:any,i:number)=>(
+                      <li key={i}>
+                        <div className="timeline-start">{e.years}</div>
+                        <div className="timeline-middle">●</div>
+                        <div className="timeline-end">
+                          <Sheet>
+                            <SheetTrigger className="link link-hover text-lg">
+                              {e.role} · {e.company}
+                            </SheetTrigger>
+                            <SheetContent side="right">
+                              <h3 className="text-xl font-medium mb-2">{e.role} @ {e.company}</h3>
+                              <ul className="list mt-3">
+                                {e.bullets.map((b:string,j:number)=> <li key={j} className="list-row">{b}</li>)}
+                              </ul>
+                            </SheetContent>
+                          </Sheet>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </main>
+              )
+            }
+
+  - id: F4_scroll_motion
+    name: Dynamic scrolling + reveal + progress
+    depends_on: [T1_tailwind_shadcn_daisy]
+    steps:
+      - create:
+          path: hooks/useScrollProgress.ts
+          content: |
+            "use client";
+            import { useEffect, useState } from "react";
+            export function useScrollProgress(){
+              const [p,setP]=useState(0);
+              useEffect(()=>{
+                const onScroll=()=>{
+                  const h = document.documentElement;
+                  const progress = (h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
+                  setP(Math.max(0,Math.min(100,progress||0)));
+                };
+                onScroll(); window.addEventListener("scroll",onScroll,{passive:true});
+                return ()=>window.removeEventListener("scroll",onScroll);
+              },[]);
+              return p;
+            }
+      - edit:
+          path: app/layout.tsx
+          replace_or_append: |
+            import "./globals.css";
+            import { useScrollProgress } from "@/hooks/useScrollProgress";
+            export default function RootLayout({ children }:{children:React.ReactNode}){
+              const p = typeof window !== "undefined" ? useScrollProgress() : 0;
+              return (
+                <html lang="en" suppressHydrationWarning>
+                  <body>
+                    <div style={{width:`${p}%`}} className="fixed top-0 left-0 h-0.5 bg-primary z-50" />
+                    {children}
+                  </body>
+                </html>
+              )
+            }
+
+  - id: F5_portfolio_chat
+    name: AI “About-Me” Q&A (RAG-lite)
+    depends_on: [T1_tailwind_shadcn_daisy]
+    steps:
+      - run: |
+          cd ai-portfolio
+          npm i openai zod
+      - create:
+          path: scripts/build-embeddings.ts
+          content: |
+            import fs from "node:fs";
+            import path from "node:path";
+            import OpenAI from "openai";
+            const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+            const sources = [
+              path.join(process.cwd(),"content","resume.json"),
+              path.join(process.cwd(),"content","projects.json")
+            ];
+            (async ()=>{
+              const chunks:string[]=[];
+              for(const s of sources){
+                if (fs.existsSync(s)) chunks.push(fs.readFileSync(s,"utf8"));
+              }
+              const text = chunks.join("\n");
+              const res = await client.embeddings.create({ model:"text-embedding-3-small", input: text.match(/.{1,800}/gs) || [text] });
+              const out = res.data.map((d,i)=>({ id: `chunk_${i}`, embedding: d.embedding }));
+              fs.writeFileSync(path.join(process.cwd(),"public","embeddings.json"), JSON.stringify(out));
+            })();
+      - create:
+          path: app/api/ask/route.ts
+          content: |
+            import { NextResponse } from "next/server";
+            import OpenAI from "openai";
+            export async function POST(req: Request){
+              const { question } = await req.json();
+              // In production, load embeddings and top-k context; omitted brevity
+              const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+              const msg = [
+                { role:"system", content:"You are Vikyath’s portfolio bot. Answer using truthful, concise info from provided context. If unsure, say you don't know." },
+                { role:"user", content: question }
+              ];
+              const r = await client.chat.completions.create({ model:"gpt-4o-mini", messages: msg });
+              return NextResponse.json({ answer: r.choices[0].message?.content ?? "" });
+            }
+      - create:
+          path: components/chat/PortfolioChat.tsx
+          content: |
+            "use client";
+            import { useState } from "react";
+            import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+            import { Button } from "@/components/ui/button";
+            export default function PortfolioChat(){
+              const [q,setQ]=useState(""); const [a,setA]=useState("");
+              const ask = async()=>{
+                const r = await fetch("/api/ask",{ method:"POST", body: JSON.stringify({question:q}) });
+                const j = await r.json(); setA(j.answer);
+              };
+              return (
+                <div className="fixed bottom-4 right-4">
+                  <Sheet>
+                    <SheetTrigger asChild><Button>Ask about me</Button></SheetTrigger>
+                    <SheetContent side="right">
+                      <h3 className="text-lg font-medium mb-2">Ask about my work</h3>
+                      <textarea className="textarea textarea-md w-full" placeholder="Your question" value={q} onChange={e=>setQ(e.target.value)} />
+                      <div className="mt-3 flex gap-2">
+                        <Button onClick={ask}>Ask</Button>
+                      </div>
+                      <pre className="mockup-code mt-4 whitespace-pre-wrap">{a}</pre>
+                    </SheetContent>
+                  </Sheet>
+                </div>
+              )
+            }
+      - edit:
+          path: app/layout.tsx
+          replace_or_append: |
+            import PortfolioChat from "@/components/chat/PortfolioChat";
+            // ... inside <body> just before closing:
+            {/* <PortfolioChat /> */}
+
+  - id: F6_ai_playground
+    name: AI Playground (tfjs demos)
+    depends_on: [T1_tailwind_shadcn_daisy]
+    steps:
+      - run: |
+          cd ai-portfolio
+          npm i @tensorflow/tfjs @tensorflow-models/mobilenet @tensorflow-models/toxicity
+      - create:
+          path: app/(site)/playground/page.tsx
+          content: |
+            "use client";
+            import { useEffect, useState } from "react";
+            import * as tf from "@tensorflow/tfjs";
+            import * as mobilenet from "@tensorflow-models/mobilenet";
+            import * as toxicity from "@tensorflow-models/toxicity";
+            export default function Playground(){
+              const [model,setModel]=useState<any>(null);
+              useEffect(()=>{ mobilenet.load().then(setModel); },[]);
+              return (
+                <main className="mx-auto max-w-4xl px-6 py-16">
+                  <h1 className="text-3xl font-semibold mb-4">AI Playground</h1>
+                  <section className="card p-6">
+                    <h2 className="card-title">Vision (MobileNet)</h2>
+                    <input type="file" accept="image/*" onChange={async(e)=>{
+                      const file = e.target.files?.[0]; if(!file||!model) return;
+                      const img = document.createElement("img");
+                      img.src = URL.createObjectURL(file);
+                      img.onload = async ()=> {
+                        const preds = await model.classify(img,3);
+                        alert(JSON.stringify(preds,null,2));
+                      }
+                    }} />
+                  </section>
+                </main>
+              )
+            }
+
+  - id: F7_theme_toggle
+    name: Light/Dark theme toggle
+    depends_on: [T1_tailwind_shadcn_daisy]
+    steps:
+      - create:
+          path: components/theme-toggle.tsx
+          content: |
+            export default function ThemeToggle(){
+              return (
+                <label className="flex items-center gap-2">
+                  <span className="text-sm">Dark</span>
+                  <input type="checkbox" value="dark" className="theme-controller toggle" />
+                </label>
+              )
+            }
+      - create:
+          path: components/site-nav.tsx
+          content: |
+            import ThemeToggle from "@/components/theme-toggle";
+            export default function SiteNav(){
+              return (
+                <nav className="navbar px-6 py-4 bg-base-100 border-b">
+                  <div className="navbar-start font-medium">Vikyath</div>
+                  <div className="navbar-end"><ThemeToggle/></div>
+                </nav>
+              )
+            }
+      - edit:
+          path: app/layout.tsx
+          replace_or_append: |
+            import SiteNav from "@/components/site-nav";
+            // inside <body>:
+            {/* <SiteNav /> */}
+
+  - id: S1_seo_og
+    name: SEO + sitemap + OG
+    depends_on: [T0_scaffold]
+    steps:
+      - create:
+          path: app/robots.txt/route.ts
+          content: |
+            export function GET(){ return new Response("User-agent: *\nAllow: /\nSitemap: https://your-domain.com/sitemap.xml"); }
+      - create:
+          path: app/sitemap.ts
+          content: |
+            export default async function sitemap(){
+              const base = "https://your-domain.com";
+              return [{ url: base, lastModified: new Date() }, { url: `${base}/projects` }];
+            }
+
+  - id: S2_contact_api
+    name: Contact form → Firestore
+    depends_on: [T2_firebase_init]
+    steps:
+      - create:
+          path: app/api/contact/route.ts
+          content: |
+            import { db } from "@/lib/firebase.admin";
+            import { NextResponse } from "next/server";
+            export async function POST(req: Request){
+              const body = await req.json();
+              await db.collection("contacts").add({ ...body, ts: Date.now() });
+              return NextResponse.json({ ok:true });
+            }
+
+  - id: QA_tests
+    name: QA: tests + lint + a11y checks
+    depends_on: [F2_projects, F3_resume, F5_portfolio_chat]
+    steps:
+      - run: |
+          cd ai-portfolio
+          npm i -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event
+      - create:
+          path: tests/smoke.spec.tsx
+          content: |
+            import { describe, it, expect } from "vitest";
+            describe("smoke", ()=>{ it("ok", ()=> expect(true).toBe(true)) })
+      - run: |
+          npm run build
+
+  - id: PERF_lighthouse
+    name: Performance budget (local)
+    depends_on: [F1_hero]
+    steps:
+      - note: Run Lighthouse in Chrome DevTools → target LCP < 1.8s, CLS < 0.02.
+
+  - id: REF_inspiration_forks
+    name: Inspiration forks (open-source only)
+    steps:
+      - note: Verify licenses before reuse; keep attribution.
+      - run: |
+          mkdir -p _study && cd _study
+          git clone https://github.com/cobiwave/simplefolio || true
+          git clone https://github.com/saadpasta/developerFolio || true
+          git clone https://github.com/leerob/leerob.io || true
+          git clone https://github.com/antonreshetov/mountable || true
+
+  - id: REF_layout_study_mirrors
+    name: Layout/animation study mirrors (local only)
+    steps:
+      - note: Mirrors are for private reference; do NOT republish scraped assets.
+      - run: |
+          mkdir -p _mirrors && cd _mirrors
+          wget --mirror --convert-links --page-requisites --no-parent https://brittanychiang.com/ || true
+          wget --mirror --convert-links --page-requisites --no-parent https://bruno-simon.com/ || true
+          wget --mirror --convert-links --page-requisites --no-parent https://rauchg.com/ || true
+          # Also fine to study high-quality product sites (respect licenses/assets):
+          wget --mirror --convert-links --page-requisites --no-parent https://stripe.com/ || true
+          wget --mirror --convert-links --page-requisites --no-parent https://www.notion.so/ || true
+          wget --mirror --convert-links --page-requisites --no-parent https://www.figma.com/ || true
