@@ -1,8 +1,8 @@
 "use client";
 import { Card } from "@/components/ui/card";
-import { useState } from "react";
-import { ExternalLink, Github } from "lucide-react";
+import { ExternalLink, Github, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 
 interface Project {
   slug: string;
@@ -11,24 +11,47 @@ interface Project {
   tags: string[];
   stack: string[];
   summary: string;
-  repo: string;
-  demo: string;
+  repo?: string;
+  demo?: string;
   media?: string;
 }
 
 export default function ProjectCard({ p }: { p: Project }) {
-  const [hover, setHover] = useState(false);
+  const [viewCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Track project view when component mounts
+    const trackView = async () => {
+      try {
+        await fetch("/api/project-view", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ slug: p.slug })
+        });
+      } catch {
+        console.log("View tracking not available");
+      }
+    };
+    
+    trackView();
+  }, [p.slug]);
 
   return (
     <Card 
-      onMouseEnter={() => setHover(true)} 
-      onMouseLeave={() => setHover(false)}
       className="group overflow-hidden relative transition-all duration-300 will-change-transform hover:shadow-lg"
     >
       <div className="p-6 space-y-4">
         <div className="flex items-start justify-between">
           <h3 className="text-xl font-semibold">{p.title}</h3>
-          <span className="text-sm text-muted-foreground">{p.year}</span>
+          <div className="text-right">
+            <span className="text-sm text-muted-foreground block">{p.year}</span>
+            {viewCount !== null && (
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Eye className="h-3 w-3" />
+                <span>{viewCount}</span>
+              </div>
+            )}
+          </div>
         </div>
         
         <p className="text-muted-foreground text-sm">{p.summary}</p>
@@ -50,18 +73,22 @@ export default function ProjectCard({ p }: { p: Project }) {
         </div>
         
         <div className="flex gap-2 pt-2">
-          <Button variant="outline" size="sm" asChild>
-            <a href={p.repo} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
-              <Github className="h-4 w-4" />
-              Code
-            </a>
-          </Button>
-          <Button variant="outline" size="sm" asChild>
-            <a href={p.demo} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
-              <ExternalLink className="h-4 w-4" />
-              Demo
-            </a>
-          </Button>
+          {p.repo && (
+            <Button variant="outline" size="sm" asChild>
+              <a href={p.repo} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                <Github className="h-4 w-4" />
+                Code
+              </a>
+            </Button>
+          )}
+          {p.demo && (
+            <Button variant="outline" size="sm" asChild>
+              <a href={p.demo} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                <ExternalLink className="h-4 w-4" />
+                Demo
+              </a>
+            </Button>
+          )}
         </div>
       </div>
       

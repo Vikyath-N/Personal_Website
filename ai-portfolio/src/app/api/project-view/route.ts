@@ -10,6 +10,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Slug is required" }, { status: 400 });
     }
     
+    if (!db) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
+    
     const ref = db.collection("projectViews").doc(slug);
     await ref.set({ count: 0 }, { merge: true });
     await ref.update({ count: FieldValue.increment(1) });

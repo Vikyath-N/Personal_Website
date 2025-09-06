@@ -1,9 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Send, Loader2, Sparkles } from "lucide-react";
+import { MessageCircle, Send, Loader2, Sparkles, Square } from "lucide-react";
 
 interface Message {
   role: "user" | "assistant";
@@ -23,45 +23,97 @@ export default function PortfolioChat() {
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const controllerRef = useRef<AbortController | null>(null);
 
-  const askQuestion = async (q?: string) => {
-    const questionToAsk = q || question;
-    if (!questionToAsk.trim() || loading) return;
-
-    const userMessage: Message = { role: "user", content: questionToAsk };
+  const streamAsk = async (questionToAsk?: string) => {
+    setLoading(true);
+    const currentQuestion = questionToAsk || question;
+    const userMessage: Message = { role: "user", content: currentQuestion };
     setMessages(prev => [...prev, userMessage]);
     setQuestion("");
-    setLoading(true);
+
+    // Add empty assistant message that we'll populate
+    const assistantMessage: Message = { role: "assistant", content: "" };
+    setMessages(prev => [...prev, assistantMessage]);
+
+    controllerRef.current?.abort();
+    controllerRef.current = new AbortController();
 
     try {
-      const response = await fetch("/api/ask", {
+      // Use non-streaming endpoint for reliability
+      const res = await fetch("/api/ask/", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: questionToAsk })
+        body: JSON.stringify({ question: currentQuestion }),
+        signal: controllerRef.current.signal,
+        headers: { "Content-Type": "application/json" }
       });
 
-      const data = await response.json();
-      
-      if (data.error) {
-        throw new Error(data.error);
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
       }
 
-      const assistantMessage: Message = { role: "assistant", content: data.answer };
-      setMessages(prev => [...prev, assistantMessage]);
+      const data = await res.json();
+      
+      if (data.answer) {
+        // Simulate streaming by adding text progressively
+        const answer = data.answer;
+        let currentText = "";
+        
+        for (let i = 0; i < answer.length; i++) {
+          if (controllerRef.current?.signal.aborted) break;
+          
+          currentText += answer[i];
+          setMessages(prev =>
+            prev.map((msg, idx) =>
+              idx === prev.length - 1 && msg.role === "assistant"
+                ? { ...msg, content: currentText }
+                : msg
+            )
+          );
+          
+          // Small delay to simulate streaming
+          await new Promise(resolve => setTimeout(resolve, 20));
+        }
+      } else {
+        setMessages(prev =>
+          prev.map((msg, idx) =>
+            idx === prev.length - 1 && msg.role === "assistant"
+              ? { ...msg, content: "Sorry, I couldn't generate a response." }
+              : msg
+          )
+        );
+      }
     } catch (error) {
-      const errorMessage: Message = { 
-        role: "assistant", 
-        content: "Sorry, I encountered an error. Please try again." 
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      if (error instanceof Error && error.name !== 'AbortError') {
+        setMessages(prev =>
+          prev.map((msg, idx) =>
+            idx === prev.length - 1 && msg.role === "assistant"
+              ? { ...msg, content: "Sorry, I encountered an error. Please try again." }
+              : msg
+          )
+        );
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  const askQuestion = async (q?: string) => {
+    const questionToAsk = q || question;
+    if (!questionToAsk.trim() || loading) return;
+
+    setQuestion("");
+    streamAsk(questionToAsk);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     askQuestion();
+  };
+
+  const stopStreaming = () => {
+    controllerRef.current?.abort();
+    setLoading(false);
   };
 
   return (
@@ -76,7 +128,7 @@ export default function PortfolioChat() {
           </Button>
         </SheetTrigger>
         
-        <SheetContent side="right" className="w-[400px] sm:w-[540px] flex flex-col">
+        <SheetContent side="right" className="w-[400px] sm:w-[540px] flex flex-col" aria-describedby="chat-description">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
               <Sparkles className="h-5 w-5" />
@@ -84,13 +136,16 @@ export default function PortfolioChat() {
             </SheetTitle>
           </SheetHeader>
 
+          <div id="chat-description" className="sr-only">
+            Chat interface to ask questions about Vikyath's background, experience, and projects
+          </div>
           <div className="flex-1 flex flex-col gap-4 mt-6">
             {/* Welcome Message */}
             {messages.length === 0 && (
               <div className="space-y-4">
                 <div className="p-4 bg-muted rounded-lg">
                   <p className="text-sm">
-                    Hi! I'm an AI assistant that can answer questions about Vikyath's background, 
+                    Hi! I&apos;m an AI assistant that can answer questions about Vikyath&apos;s background, 
                     experience, skills, and projects. What would you like to know?
                   </p>
                 </div>
@@ -146,14 +201,25 @@ export default function PortfolioChat() {
                 className="flex-1 input input-bordered input-sm"
                 disabled={loading}
               />
-              <Button 
-                type="submit" 
-                size="sm" 
+              <Button
+                type="submit"
+                size="sm"
                 disabled={!question.trim() || loading}
                 className="px-3"
               >
                 <Send className="h-4 w-4" />
               </Button>
+              {loading && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="destructive"
+                  onClick={stopStreaming}
+                  className="px-3"
+                >
+                  <Square className="h-4 w-4" />
+                </Button>
+              )}
             </form>
           </div>
         </SheetContent>

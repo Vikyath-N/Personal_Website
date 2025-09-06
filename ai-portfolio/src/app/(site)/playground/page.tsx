@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import * as tf from "@tensorflow/tfjs";
 import * as mobilenet from "@tensorflow-models/mobilenet";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,7 @@ interface Prediction {
 }
 
 export default function Playground() {
-  const [model, setModel] = useState<any>(null);
+  const [model, setModel] = useState<mobilenet.MobileNet | null>(null);
   const [loading, setLoading] = useState(false);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -176,6 +175,7 @@ export default function Playground() {
 
             {imageUrl && (
               <div className="mt-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={imageUrl}
                   alt="Selected"

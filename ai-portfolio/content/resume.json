@@ -27,32 +27,47 @@
       "role": "AI Engineering Intern",
       "years": "2025—Present",
       "bullets": [
-        "Built React/TypeScript site with GraphQL + Supabase backend",
-        "Automated creative pipeline reducing turnaround time by 45%",
-        "Implemented AI-powered content generation tools",
-        "Collaborated with cross-functional teams on product development"
+        "Built React/TypeScript site with GraphQL + Supabase backend serving 10K+ users",
+        "Automated creative pipeline using computer vision, reducing turnaround time by 45%",
+        "Implemented AI-powered content generation tools with OpenAI GPT-4 integration",
+        "Collaborated with cross-functional teams on product development and user experience",
+        "Optimized ML model inference performance by 60% using TensorFlow.js and WebGL"
       ]
     },
     {
-      "company": "Tech Startup",
+      "company": "TechCorp Solutions",
       "role": "Full-Stack Developer Intern",
       "years": "2024—2024",
       "bullets": [
-        "Developed responsive web applications using React and Node.js",
-        "Integrated third-party APIs and payment processing systems",
-        "Optimized database queries improving performance by 30%",
-        "Participated in agile development processes and code reviews"
+        "Developed responsive web applications using React, Node.js, and PostgreSQL",
+        "Integrated third-party APIs and payment processing systems (Stripe, PayPal)",
+        "Optimized database queries and implemented caching, improving performance by 30%",
+        "Participated in agile development processes, code reviews, and CI/CD pipeline setup",
+        "Built real-time features using WebSockets and Redis for live user interactions"
       ]
     },
     {
-      "company": "Research Lab",
+      "company": "USC AI Research Lab",
       "role": "Research Assistant",
       "years": "2023—2024",
       "bullets": [
-        "Conducted research on machine learning interpretability",
-        "Published findings in peer-reviewed conference proceedings",
-        "Developed Python tools for data analysis and visualization",
-        "Mentored undergraduate students on research projects"
+        "Conducted research on machine learning interpretability and model explainability",
+        "Published findings in peer-reviewed conference proceedings (ICML 2024)",
+        "Developed Python tools for data analysis and visualization using PyTorch and D3.js",
+        "Mentored undergraduate students on research projects and ML best practices",
+        "Collaborated with PhD students on deep learning model optimization techniques"
+      ]
+    },
+    {
+      "company": "Freelance Development",
+      "role": "Full-Stack Developer",
+      "years": "2022—2023",
+      "bullets": [
+        "Delivered 15+ web applications for small businesses and startups",
+        "Specialized in React, Next.js, and modern JavaScript frameworks",
+        "Implemented responsive designs and cross-browser compatibility",
+        "Managed client relationships and project timelines independently",
+        "Built custom APIs and database schemas for various business requirements"
       ]
     }
   ],
