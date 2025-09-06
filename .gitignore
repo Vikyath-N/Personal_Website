@@ -13,6 +13,7 @@ dist/
 firebase-debug.log
 firebase-debug.*.log
 personal-website-ef637-firebase-adminsdk-fbsvc-fe700452c4.json
+personal-website-ef637-firebase-adminsdk-fbsvc-606d9da203.json
 
 # Environment variables
 .env
