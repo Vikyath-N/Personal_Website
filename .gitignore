@@ -12,6 +12,7 @@ dist/
 .firebaserc
 firebase-debug.log
 firebase-debug.*.log
+personal-website-ef637-firebase-adminsdk-fbsvc-fe700452c4.json
 
 # Environment variables
 .env
@@ -38,3 +39,14 @@ Thumbs.db
 # Logs
 logs
 *.log
+
+# Task files and documentation
+Sep_5_tasks.yml
+open_router_erros.md
+
+# Testing scripts
+ai-portfolio/test-build.sh
+ai-portfolio/testing_chat.sh
+
+# Cursor tasks
+cursor-tasks.yaml
