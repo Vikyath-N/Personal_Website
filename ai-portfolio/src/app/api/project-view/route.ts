@@ -22,9 +22,10 @@ export async function POST(req: Request) {
       await ref.update({ count: FieldValue.increment(1) });
       
       return NextResponse.json({ ok: true });
-    } catch (firestoreError: any) {
+    } catch (firestoreError: unknown) {
       // If Firestore API is not enabled, log and continue gracefully
-      if (firestoreError.code === 7 || firestoreError.message?.includes('SERVICE_DISABLED')) {
+      const error = firestoreError as { code?: number; message?: string };
+      if (error.code === 7 || error.message?.includes('SERVICE_DISABLED')) {
         console.log("Firestore API not enabled, skipping project view tracking");
         return NextResponse.json({ ok: true, message: "Tracking disabled - Firestore not enabled" });
       }
