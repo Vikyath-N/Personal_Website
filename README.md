@@ -277,8 +277,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Vikyath Naradasi**
 - Website: [vikyath.me](https://vikyath.me)
-- LinkedIn: [linkedin.com/in/vikyath](https://www.linkedin.com/in/vikyathnaradasi/)
-- GitHub: [github.com/vikyath](https://github.com/Vikyath-N/)
+- LinkedIn: [linkedin.com/in/vikyathnaradasi](https://www.linkedin.com/in/vikyathnaradasi/)
+- GitHub: [github.com/Vikyath-N](https://github.com/Vikyath-N/)
 - Email: please don't 
 
 ---
