@@ -3,20 +3,10 @@ name: Deploy to Firebase
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "firebase-deploy"
-  cancel-in-progress: false
 
 jobs:
-  # Build and Deploy job
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,9 +18,7 @@ jobs:
 
       - name: Install Dependencies
         working-directory: ai-portfolio
-        run: |
-          echo "Installing dependencies with npm install"
-          npm install
+        run: npm install
 
       - name: Build
         working-directory: ai-portfolio
