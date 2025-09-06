@@ -32,15 +32,53 @@ jobs:
         NEXT_PUBLIC_SITE_URL: https://vikyath.me
     
     - name: Setup Firebase CLI
+      if: github.event_name == 'push'
       run: npm install -g firebase-tools
 
     - name: Create Firebase Service Account Key
+      if: github.event_name == 'push'
       run: echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/firebase-service-account.json
       env:
         FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
     - name: Deploy to Firebase Hosting (ai-portfolio)
+      if: github.event_name == 'push'
       working-directory: ai-portfolio
       run: firebase deploy --only hosting --project personal-website-ef637
       env:
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-service-account.json
+
+    - name: Smoke test production (vikyath.me)
+      if: github.event_name == 'push'
+      shell: bash
+      run: |
+        set -euo pipefail
+        base="https://vikyath.me"
+        run_id="${GITHUB_RUN_ID}"
+        paths=( "/" "/projects/" "/resume/" "/playground/" )
+        for p in "${paths[@]}"; do
+          url="${base}${p}?t=${run_id}"
+          echo "Testing ${url}"
+          tries=0
+          code=0
+          while [[ $tries -lt 5 ]]; do
+            code=$(curl -sS -o /tmp/out.html -w "%{http_code}" -H "Cache-Control: no-cache" "$url" || echo 000)
+            if [[ "$code" == "200" ]]; then break; fi
+            tries=$((tries+1))
+            echo "Non-200 ($code). Retrying in 3s... ($tries/5)"
+            sleep 3
+          done
+          if [[ "$code" != "200" ]]; then
+            echo "FAIL: ${url} returned ${code}"
+            exit 1
+          fi
+          # Basic sanity: content-type html and minimal length
+          ct=$(file -b --mime-type /tmp/out.html || true)
+          len=$(wc -c < /tmp/out.html | tr -d ' ')
+          echo "CT=${ct} LEN=${len}"
+          if [[ "$len" -lt 200 ]]; then
+            echo "FAIL: Content too small for ${url}"
+            exit 1
+          fi
+          head -n 3 /tmp/out.html | sed -E 's/<[^>]+>/ /g' | tr -s ' ' | cut -c1-160 | sed 's/^/snippet: /'
+        done
