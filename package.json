@@ -10,12 +10,17 @@
     "deploy": "npm run build && firebase deploy",
     "serve": "firebase serve"
   },
-  "keywords": ["personal website", "firebase", "static site"],
+  "keywords": [
+    "personal website",
+    "firebase",
+    "static site"
+  ],
   "author": "Vikyath",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "firebase": "^11.2.0"
+    "firebase": "^11.2.0",
+    "sodium-native": "^5.0.8"
   },
   "devDependencies": {
     "firebase-tools": "^13.0.0",
