@@ -137,7 +137,7 @@ export default function PortfolioChat() {
           </SheetHeader>
 
           <div id="chat-description" className="sr-only">
-            Chat interface to ask questions about Vikyath's background, experience, and projects
+            Chat interface to ask questions about Vikyath&apos;s background, experience, and projects
           </div>
           <div className="flex-1 flex flex-col gap-4 mt-6">
             {/* Welcome Message */}
