@@ -28,7 +28,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'ai-portfolio/package-lock.json'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         working-directory: ai-portfolio
         run: npm install
 
