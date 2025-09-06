@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
+import * as tf from "@tensorflow/tfjs";
 import * as mobilenet from "@tensorflow-models/mobilenet";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ export default function Playground() {
   const [loading, setLoading] = useState(false);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [modelError, setModelError] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -25,12 +27,34 @@ export default function Playground() {
     const loadModel = async () => {
       setLoading(true);
       try {
+        console.log("Setting up TensorFlow.js backend...");
+        
+        // Set backend to CPU for browser compatibility
+        await tf.setBackend('cpu');
+        await tf.ready();
+        
+        console.log("TensorFlow.js backend ready:", tf.getBackend());
         console.log("Loading MobileNet model...");
-        const loadedModel = await mobilenet.load();
+        
+        const loadedModel = await mobilenet.load({
+          version: 2,
+          alpha: 1.0,
+        });
+        
         setModel(loadedModel);
         console.log("Model loaded successfully");
       } catch (error) {
         console.error("Error loading model:", error);
+        // Try fallback without specific version
+        try {
+          console.log("Trying fallback model loading...");
+          const fallbackModel = await mobilenet.load();
+          setModel(fallbackModel);
+          console.log("Fallback model loaded successfully");
+        } catch (fallbackError) {
+          console.error("Fallback model loading failed:", fallbackError);
+          setModelError("Failed to load AI model. Please refresh the page and try again.");
+        }
       } finally {
         setLoading(false);
       }
@@ -190,10 +214,26 @@ export default function Playground() {
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Predictions</h2>
           
-          {!model && (
+          {!model && !modelError && (
             <div className="flex items-center gap-2 text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" />
               Loading AI model...
+            </div>
+          )}
+
+          {modelError && (
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <p className="text-red-600 dark:text-red-400 text-sm">
+                {modelError}
+              </p>
+              <Button 
+                onClick={() => window.location.reload()} 
+                variant="outline" 
+                size="sm" 
+                className="mt-2"
+              >
+                Refresh Page
+              </Button>
             </div>
           )}
 
