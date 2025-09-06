@@ -1,79 +1,61 @@
-# 🚀 GitHub Pages Deployment Guide
+# 🚀 Firebase + Cloudflare Deployment Guide
 
 ## Overview
-This portfolio is configured to deploy automatically to GitHub Pages using GitHub Actions. The deployment happens whenever you push to the `main` branch.
+This portfolio is configured to deploy automatically to Firebase Hosting using GitHub Actions. Firebase serves through Cloudflare for enhanced security and performance. The deployment happens whenever you push to the `main` branch.
 
 ## Architecture
 ```
-GitHub Repository → GitHub Actions → GitHub Pages → vikyath.me
+GitHub Repository → GitHub Actions → Firebase Hosting → Cloudflare → vikyath.me
 ```
 
 ## Setup Instructions
 
-### 1. Enable GitHub Pages
-1. Go to your repository on GitHub
-2. Navigate to **Settings** → **Pages**
-3. Under **Source**, select **GitHub Actions**
-4. Save the settings
+### 1. Firebase Service Account Setup
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Select your project: `personal-website-ef637`
+3. Go to **Project Settings** → **Service Accounts**
+4. Click **Generate New Private Key**
+5. Download the JSON file
 
-### 2. Configure Custom Domain
-1. In the same **Pages** settings, scroll down to **Custom domain**
-2. Enter: `vikyath.me`
-3. Check **Enforce HTTPS** (recommended)
-4. Click **Save**
+### 2. Add GitHub Secrets
+1. Go to your GitHub repository
+2. Navigate to **Settings** → **Secrets and variables** → **Actions**
+3. Add these secrets:
+   - `FIREBASE_SERVICE_ACCOUNT`: Paste the entire JSON content from step 1
+   - `OPENROUTER_API_KEY`: Your OpenRouter API key
+   - `OPENROUTER_DEFAULT_MODEL`: Default model (e.g., `moonshotai/kimi-k2:free`)
+   - `OPENROUTER_FREE_MODELS_GENERAL`: Comma-separated list of free models
+   - `OPENROUTER_FREE_MODELS_CODE`: Comma-separated list of code-focused models
 
-### 3. Update DNS Records
-In your DNS provider (GoDaddy), update these records:
+### 3. Firebase Hosting Configuration
+Your Firebase hosting is already configured in `firebase.json`:
+- **Public directory**: `out` (Next.js static export)
+- **Project ID**: `personal-website-ef637`
+- **Custom domain**: Already configured through Cloudflare
 
-#### Option A: Apex Domain (vikyath.me)
-```
-Type: A
-Name: @
-Value: 185.199.108.153
-TTL: 3600
-
-Type: A  
-Name: @
-Value: 185.199.109.153
-TTL: 3600
-
-Type: A
-Name: @
-Value: 185.199.110.153
-TTL: 3600
-
-Type: A
-Name: @
-Value: 185.199.111.153
-TTL: 3600
-```
-
-#### Option B: CNAME (www.vikyath.me)
-```
-Type: CNAME
-Name: www
-Value: yourusername.github.io
-TTL: 3600
-```
-
-### 4. Verify Domain
-1. GitHub will automatically verify your domain
-2. You'll see a green checkmark when verified
-3. DNS propagation can take up to 24 hours
+### 4. Cloudflare Integration
+Your current setup already includes:
+- ✅ Cloudflare as DNS provider
+- ✅ Cloudflare Turnstile for security
+- ✅ Custom domain (vikyath.me) pointing to Firebase
+- ✅ SSL/TLS encryption
 
 ## Deployment Process
 
 ### Automatic Deployment
-- Push to `main` branch → Automatic deployment
+- Push to `main` branch → Automatic deployment to Firebase
 - Check **Actions** tab for deployment status
 - Site updates in ~2-3 minutes
+- Cloudflare automatically caches the new content
 
 ### Manual Deployment
 ```bash
-# Build locally
-npm run build
+# Build and deploy locally
+cd ai-portfolio
+npm run deploy
 
-# Preview locally
+# Or just build for testing
+npm run build
 npm run preview
 ```
 
@@ -86,6 +68,7 @@ npm run preview
 
 ### GitHub Secrets
 Add these in **Settings** → **Secrets and variables** → **Actions**:
+- `FIREBASE_SERVICE_ACCOUNT` - Firebase service account JSON
 - `OPENROUTER_API_KEY`
 - `OPENROUTER_DEFAULT_MODEL`
 - `OPENROUTER_FREE_MODELS_GENERAL`
@@ -95,7 +78,8 @@ Add these in **Settings** → **Secrets and variables** → **Actions**:
 ```
 ai-portfolio/
 ├── .github/workflows/deploy.yml  # CI/CD pipeline
-├── public/CNAME                  # Custom domain config
+├── firebase.json                 # Firebase hosting config
+├── .firebaserc                   # Firebase project config
 ├── out/                          # Built static files
 └── DEPLOYMENT.md                 # This guide
 ```
@@ -106,33 +90,36 @@ ai-portfolio/
 1. Check **Actions** tab for error logs
 2. Verify all environment variables are set
 3. Ensure `npm ci` runs successfully
+4. Check Firebase service account permissions
 
-### Domain Issues
-1. Verify DNS records are correct
-2. Check domain verification status in GitHub Pages settings
-3. Wait for DNS propagation (up to 24 hours)
+### Firebase Deployment Issues
+1. Verify `FIREBASE_SERVICE_ACCOUNT` secret is correctly formatted
+2. Check Firebase project ID matches `personal-website-ef637`
+3. Ensure Firebase CLI is authenticated in the workflow
 
-### SSL Certificate
-- GitHub automatically provides SSL certificates
-- Enable "Enforce HTTPS" in Pages settings
-- Certificate provisioning can take a few minutes
+### Cloudflare Issues
+1. Verify DNS records point to Firebase hosting
+2. Check Cloudflare SSL/TLS settings
+3. Monitor Cloudflare analytics for any issues
 
 ## Benefits of This Setup
-- ✅ **Free hosting** on GitHub Pages
+- ✅ **Firebase hosting** with global CDN
+- ✅ **Cloudflare security** with Turnstile protection
 - ✅ **Automatic deployments** on git push
-- ✅ **Custom domain** support
-- ✅ **HTTPS by default**
-- ✅ **Global CDN** via GitHub's infrastructure
-- ✅ **No vendor lock-in**
+- ✅ **Custom domain** support (vikyath.me)
+- ✅ **HTTPS by default** via Cloudflare
+- ✅ **Enhanced security** with Cloudflare features
 - ✅ **Version control** integration
+- ✅ **Cost-effective** hosting solution
 
-## Migration from Firebase
-1. Keep Firebase project as backup initially
-2. Test GitHub Pages deployment thoroughly
-3. Update DNS records when ready
-4. Remove Firebase hosting when confirmed working
+## Current Architecture Benefits
+- **Firebase**: Reliable hosting with automatic scaling
+- **Cloudflare**: Enhanced security, DDoS protection, and performance
+- **GitHub Actions**: Automated CI/CD pipeline
+- **Custom Domain**: Professional branding with vikyath.me
 
 ## Monitoring
 - Check deployment status in **Actions** tab
-- Monitor site performance via GitHub Pages analytics
+- Monitor Firebase hosting analytics
+- Use Cloudflare analytics for performance insights
 - Set up uptime monitoring if needed

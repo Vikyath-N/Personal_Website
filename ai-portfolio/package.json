@@ -8,8 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "export": "next build && next export",
-    "deploy": "npm run build",
-    "preview": "npm run build && npx serve@latest out"
+    "deploy": "npm run build && firebase deploy",
+    "preview": "npm run build && npx serve@latest out",
+    "serve": "firebase serve"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
