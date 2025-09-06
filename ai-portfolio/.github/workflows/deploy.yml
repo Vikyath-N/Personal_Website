@@ -29,14 +29,12 @@ jobs:
           cache-dependency-path: ai-portfolio/package-lock.json
           
       - name: Install dependencies
-        run: |
-          cd ai-portfolio
-          npm ci
+        working-directory: ai-portfolio
+        run: npm ci
           
       - name: Build with Next.js
-        run: |
-          cd ai-portfolio
-          npm run build
+        working-directory: ai-portfolio
+        run: npm run build
         env:
           # Add any build-time environment variables here
           NEXT_PUBLIC_SITE_URL: https://vikyath.me
