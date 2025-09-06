@@ -20,26 +20,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          
-      - name: Install dependencies and build
+          cache: 'npm'
+          cache-dependency-path: 'ai-portfolio/package-lock.json'
+
+      - name: Install dependencies
         working-directory: ai-portfolio
-        run: |
-          npm install
-          npm run build
+        run: npm ci
+
+      - name: Build
+        working-directory: ai-portfolio
+        run: npm run build
         env:
-          # Add any build-time environment variables here
           NEXT_PUBLIC_SITE_URL: https://vikyath.me
-          
+
+      - name: Setup Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Create Firebase Service Account Key
+        run: echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/firebase-service-account.json
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
       - name: Deploy to Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-          projectId: 'personal-website-ef637'
-          channelId: 'live'
-          entryPoint: 'ai-portfolio'
+        working-directory: ai-portfolio
+        run: firebase deploy --only hosting
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-service-account.json
