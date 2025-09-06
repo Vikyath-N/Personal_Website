@@ -89,7 +89,7 @@ ai-portfolio/
 ### Build Failures
 1. Check **Actions** tab for error logs
 2. Verify all environment variables are set
-3. Ensure `npm ci` runs successfully
+3. Ensure dependencies install successfully (`npm install`)
 4. Check Firebase service account permissions
 
 ### Firebase Deployment Issues

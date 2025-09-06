@@ -14,22 +14,28 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Setup Node.js
+    - name: Setup Node.js 20
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
         cache: 'npm'
+        cache-dependency-path: ai-portfolio/package-lock.json
     
-    - name: Install dependencies
-      run: npm ci
+    - name: Install dependencies (ai-portfolio)
+      working-directory: ai-portfolio
+      run: npm install
     
-    - name: Build project
+    - name: Build project (ai-portfolio)
+      working-directory: ai-portfolio
       run: npm run build
+      env:
+        NEXT_PUBLIC_SITE_URL: https://vikyath.me
     
-    - name: Deploy to Firebase Hosting
+    - name: Deploy to Firebase Hosting (ai-portfolio)
       uses: FirebaseExtended/action-hosting-deploy@v0
       with:
         repoToken: ${{ secrets.GITHUB_TOKEN }}
         firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         projectId: ${{ secrets.FIREBASE_PROJECT_ID }}
+        entryPoint: ai-portfolio
         channelId: live
