@@ -3,7 +3,8 @@ import { useState, useRef } from "react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Send, Loader2, Sparkles, Square } from "lucide-react";
+import { MessageCircle, Send, Loader2, Sparkles, Square, X } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: "user" | "assistant";
@@ -122,46 +123,56 @@ export default function PortfolioChat() {
         <SheetTrigger asChild>
           <Button 
             size="lg" 
-            className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
+            className="h-16 w-16 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0"
           >
-            <MessageCircle className="h-6 w-6" />
+            <MessageCircle className="h-7 w-7 text-white" />
           </Button>
         </SheetTrigger>
         
-        <SheetContent side="right" className="w-[400px] sm:w-[540px] flex flex-col" aria-describedby="chat-description">
-          <SheetHeader>
-            <SheetTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5" />
-              Ask about Vikyath
-            </SheetTitle>
-          </SheetHeader>
+        <SheetContent side="right" className="w-[420px] sm:w-[580px] flex flex-col p-0 bg-gray-50 dark:bg-gray-900" aria-describedby="chat-description">
+          {/* iOS-like Header */}
+          <div className="flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-white" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-gray-900 dark:text-white">Ask about Vikyath</h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400">AI Assistant</p>
+            </div>
+          </div>
 
           <div id="chat-description" className="sr-only">
             Chat interface to ask questions about Vikyath&apos;s background, experience, and projects
           </div>
-          <div className="flex-1 flex flex-col gap-4 mt-6">
+          
+          <div className="flex-1 flex flex-col">
             {/* Welcome Message */}
             {messages.length === 0 && (
-              <div className="space-y-4">
-                <div className="p-4 bg-muted rounded-lg">
-                  <p className="text-sm">
-                    Hi! I&apos;m an AI assistant that can answer questions about Vikyath&apos;s background, 
-                    experience, skills, and projects. What would you like to know?
-                  </p>
+              <div className="p-6 space-y-6">
+                <div className="text-center space-y-3">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center mx-auto">
+                    <Sparkles className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Hi there! 👋</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                      I&apos;m your AI assistant. Ask me anything about Vikyath&apos;s background, 
+                      experience, skills, and projects!
+                    </p>
+                  </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <p className="text-xs text-muted-foreground font-medium">Suggested questions:</p>
-                  <div className="flex flex-wrap gap-2">
+                <div className="space-y-3">
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Try asking:</p>
+                  <div className="grid gap-2">
                     {SUGGESTED_QUESTIONS.map((q, i) => (
-                      <Badge 
+                      <button
                         key={i}
-                        variant="outline" 
-                        className="cursor-pointer hover:bg-muted text-xs"
+                        className="text-left p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors text-sm text-gray-700 dark:text-gray-300 hover:shadow-sm"
                         onClick={() => askQuestion(q)}
                       >
                         {q}
-                      </Badge>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -169,58 +180,104 @@ export default function PortfolioChat() {
             )}
 
             {/* Messages */}
-            <div className="flex-1 space-y-4 overflow-y-auto max-h-96">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.map((message, i) => (
                 <div
                   key={i}
-                  className={`p-3 rounded-lg ${
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground ml-8"
-                      : "bg-muted mr-8"
-                  }`}
+                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <div
+                    className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                      message.role === "user"
+                        ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-br-md"
+                        : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-bl-md shadow-sm"
+                    }`}
+                  >
+                    {message.role === "assistant" ? (
+                      <div className="prose prose-sm max-w-none dark:prose-invert">
+                        <ReactMarkdown
+                          components={{
+                            p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                            ul: ({ children }) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
+                            ol: ({ children }) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
+                            li: ({ children }) => <li className="text-sm">{children}</li>,
+                            strong: ({ children }) => <strong className="font-semibold text-gray-900 dark:text-white">{children}</strong>,
+                            em: ({ children }) => <em className="italic">{children}</em>,
+                            code: ({ children }) => (
+                              <code className="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded text-xs font-mono">
+                                {children}
+                              </code>
+                            ),
+                            pre: ({ children }) => (
+                              <pre className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg overflow-x-auto text-xs">
+                                {children}
+                              </pre>
+                            ),
+                            h1: ({ children }) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
+                            h2: ({ children }) => <h2 className="text-base font-bold mb-2">{children}</h2>,
+                            h3: ({ children }) => <h3 className="text-sm font-bold mb-1">{children}</h3>,
+                          }}
+                        >
+                          {message.content}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    )}
+                  </div>
                 </div>
               ))}
               
               {loading && (
-                <div className="bg-muted p-3 rounded-lg mr-8 flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm">Thinking...</span>
+                <div className="flex justify-start">
+                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="flex space-x-1">
+                        <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      </div>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">Thinking...</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
 
             {/* Input Form */}
-            <form onSubmit={handleSubmit} className="flex gap-2">
-              <input
-                type="text"
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                placeholder="Ask me anything about Vikyath..."
-                className="flex-1 input input-bordered input-sm"
-                disabled={loading}
-              />
-              <Button
-                type="submit"
-                size="sm"
-                disabled={!question.trim() || loading}
-                className="px-3"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
-              {loading && (
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="destructive"
-                  onClick={stopStreaming}
-                  className="px-3"
-                >
-                  <Square className="h-4 w-4" />
-                </Button>
-              )}
-            </form>
+            <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+              <form onSubmit={handleSubmit} className="flex gap-3">
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    placeholder="Ask me anything about Vikyath..."
+                    className="w-full px-4 py-3 pr-12 rounded-full border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    disabled={loading}
+                  />
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={!question.trim() || loading}
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 p-0"
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+                {loading && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="destructive"
+                    onClick={stopStreaming}
+                    className="h-12 w-12 rounded-full p-0"
+                  >
+                    <Square className="h-4 w-4" />
+                  </Button>
+                )}
+              </form>
+            </div>
           </div>
         </SheetContent>
       </Sheet>
