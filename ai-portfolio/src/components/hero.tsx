@@ -14,34 +14,37 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="mx-auto max-w-5xl px-6 py-24">
-      <h1 className="text-5xl md:text-7xl font-semibold tracking-tight">
-        Vikyath Naradasi
-      </h1>
-      <div className="mt-3 h-10 text-2xl text-muted-foreground">
-        <AnimatePresence mode="wait">
-          <motion.span
-            key={i}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25 }}
-          >
-            {ROLES[i]}
-          </motion.span>
-        </AnimatePresence>
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24">
+      <div className="space-y-2">
+        <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-none">
+          Vikyath Naradasi
+        </h1>
+        <div className="h-8 md:h-10 flex items-center pl-[6px] sm:pl-[8px] md:pl-[10px]">
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+              className="text-xl md:text-2xl text-muted-foreground font-medium"
+            >
+              {ROLES[i]}
+            </motion.span>
+          </AnimatePresence>
+        </div>
       </div>
-      <p className="mt-6 max-w-2xl text-balance text-lg text-muted-foreground">
+      <p className="mt-8 text-balance text-lg text-muted-foreground pl-[6px] sm:pl-[8px] md:pl-[10px]">
         Building delightful AI products with robust systems & polished UX.
       </p>
-      <div className="mt-8 flex gap-3">
-        <Button asChild>
+      <div className="mt-10 flex flex-wrap gap-4">
+        <Button asChild size="lg">
           <a href="/projects">See Projects</a>
         </Button>
-        <Button variant="secondary" asChild>
+        <Button variant="secondary" asChild size="lg">
           <a href="/resume">Interactive Résumé</a>
         </Button>
-        <Button variant="ghost" asChild>
+        <Button variant="ghost" asChild size="lg">
           <a href="/playground">AI Playground</a>
         </Button>
       </div>

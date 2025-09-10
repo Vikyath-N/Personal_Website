@@ -1,80 +1,120 @@
 {
+  "personal": {
+    "name": "Vikyath Sai Naradasi",
+    "location": "San Francisco Bay Area, CA",
+    "contact": {
+      "mobile": "(510) 737-9524",
+      "email": "v.naradasi@gmail.com",
+      "linkedin": "linkedin.com/in/vikyathnaradasi",
+      "github": "github.com/Vikyath-N"
+    }
+  },
   "education": [
     {
       "school": "University of Southern California",
-      "degree": "M.S. Computer Science (AI)",
-      "years": "2024–2026",
+      "degree": "Master of Science - MS, Computer Science",
+      "years": "Aug 2024 - May 2026",
       "details": [
-        "Focus on Artificial Intelligence and Machine Learning",
-        "Relevant Coursework: Deep Learning, Natural Language Processing, Computer Vision",
-        "GPA: 3.9/4.0"
+        "Relevant Coursework:",
+        "- Machine Learning",
+        "- Foundations of Artificial Intelligence",
+        "- Deep Learning and Its Applications",
+        "- Multimodal Probabilistic Learning of Human Communication",
+        "- Analysis of Algorithms",
+        "- Database Systems",
+        "- Research Methods"
       ]
     },
     {
-      "school": "Previous University",
-      "degree": "B.S. Computer Science",
-      "years": "2020–2024",
+      "school": "University of California, Santa Cruz",
+      "degree": "Bachelor of Science - BS, Computer Science",
+      "years": "Sep 2021 - Jun 2024",
       "details": [
-        "Graduated Summa Cum Laude",
-        "Major GPA: 3.95/4.0",
-        "Dean's List all semesters"
+        "Activities and societies: Delta Sigma Pi: Business Fraternity",
+        "Relevant Coursework:",
+        "- Data structures and Algorithms (C/C++)",
+        "- Natural Language Processing (Python)",
+        "- Database Management Systems (SQL)",
+        "- Artificial Intelligence (Python, R)",
+        "- Applied Machine Learning (Python)",
+        "- Web Applications (HTML, JavaScript, CSS)",
+        "- System Design and Operating Systems (C)",
+        "- Computational Theory",
+        "- Computer Architecture",
+        "- Analysis of Algorithms",
+        "- Number Theory",
+        "- Technical Writing"
       ]
     }
   ],
   "experience": [
     {
       "company": "Interdependent Studios",
-      "role": "AI Engineering Intern",
-      "years": "2025—Present",
+      "role": "Artificial Intelligence Engineering Intern",
+      "years": "March 2025 – Present",
       "bullets": [
-        "Built React/TypeScript site with GraphQL + Supabase backend serving 10K+ users",
-        "Automated creative pipeline using computer vision, reducing turnaround time by 45%",
-        "Implemented AI-powered content generation tools with OpenAI GPT-4 integration",
-        "Collaborated with cross-functional teams on product development and user experience",
-        "Optimized ML model inference performance by 60% using TensorFlow.js and WebGL"
+        "Built the company website end-to-end (React, TypeScript, Node.js) with Supabase storage and a GraphQL API; hardened bot protection with honeypot fields, robots.txt rules, Cloudflare Tunnel, and Cloudflare Turnstile-gated form submissions",
+        "Integrated Stripe Treasury payouts through the Miro API, automating payment flows with serverless functions; processed test transactions via Stripe Sandbox with Stripe Identity and enabled same‑day settlement for future scale‑up",
+        "Automated the creative pipeline by linking GPT‑4o image generation, Sora video synthesis, and custom Zapier workflows, shrinking asset‑turnaround time by 45%. Added endpoints via OpenAI + Grok APIs behind secure ngrok tunnels"
       ]
     },
     {
-      "company": "TechCorp Solutions",
-      "role": "Full-Stack Developer Intern",
-      "years": "2024—2024",
+      "company": "CloudBox",
+      "role": "Software Engineering Intern",
+      "years": "May 2025 – August 2025",
       "bullets": [
-        "Developed responsive web applications using React, Node.js, and PostgreSQL",
-        "Integrated third-party APIs and payment processing systems (Stripe, PayPal)",
-        "Optimized database queries and implemented caching, improving performance by 30%",
-        "Participated in agile development processes, code reviews, and CI/CD pipeline setup",
-        "Built real-time features using WebSockets and Redis for live user interactions"
+        "Achieved faster, more reliable releases by migrating to a pnpm + Turborepo monorepo and standardizing Node.js TypeScript/Next.js build scripts, resulting in ~30–45% faster CI install/build times and fewer cache misses",
+        "Improved data integrity and deploy safety by designing PostgreSQL models with Prisma ORM and authoring idempotent migrations promoted via Supabase CLI. Producing 0 unauthorized reads in audits and clearer role boundaries",
+        "Increased compliance pass rates by integrating METRC package/tag/manifest flows through Node.js (TypeScript) services with typed REST clients and Zod validation, driving a ~25–35% drop in reconciliation tickets",
+        "Boosted API reliability by enforcing Zod input schemas and implementing retry with exponential backoff + timeouts for third-party calls, cutting 5xx errors by ~20–30% during testing. Designed reactive UI/UX for terms of service on TypeScript",
+        "Tightened backend security by implementing Supabase Row-Level Security (RLS) policies and least-privilege SQL grants"
       ]
     },
     {
-      "company": "USC AI Research Lab",
-      "role": "Research Assistant",
-      "years": "2023—2024",
+      "company": "Plero Music",
+      "role": "Software Engineering Intern",
+      "years": "January 2025 – May 2025",
       "bullets": [
-        "Conducted research on machine learning interpretability and model explainability",
-        "Published findings in peer-reviewed conference proceedings (ICML 2024)",
-        "Developed Python tools for data analysis and visualization using PyTorch and D3.js",
-        "Mentored undergraduate students on research projects and ML best practices",
-        "Collaborated with PhD students on deep learning model optimization techniques"
+        "Engineered a modular Python ETL pipeline that integrates Genius, Spotify, and Songstats APIs, automatically updating 120k track records with ISRC, radio‑play, and market‑location data, elevating metadata completeness to 95 % for partner labels",
+        "Automated artist onboarding by building an ID‑discovery micro‑service that maps artist names and URLs to Genius IDs with 96 % precision, eliminating about 6 hours/week of manual look‑ups and terrestrial play counts for all high‑traffic tracks.​",
+        "Packaged CLI workflow into a Webapp while wiring it into existing CI/CD pipelines, achieving one‑click deployments and sustaining 90.2 % pipeline success across 200+ production runs. Optimized conditional fetches and concurrent API calls"
       ]
     },
     {
-      "company": "Freelance Development",
-      "role": "Full-Stack Developer",
-      "years": "2022—2023",
+      "company": "Reality AI Lab",
+      "role": "Software Development Intern",
+      "years": "April 2024 – August 2024",
       "bullets": [
-        "Delivered 15+ web applications for small businesses and startups",
-        "Specialized in React, Next.js, and modern JavaScript frameworks",
-        "Implemented responsive designs and cross-browser compatibility",
-        "Managed client relationships and project timelines independently",
-        "Built custom APIs and database schemas for various business requirements"
+        "Led a team of 4 other interns to build a comprehensive report using SQL and Firebase, resulting in a 50% reduction in data retrieval time and a 20% improvement in data accuracy. Resolved screen distortion issues, enhanced web user experience",
+        "Enhanced the \"Chat Bot\" tool by 40%, improving user navigation through categorized and collapsible message sections, and resolving screen distortion issues, leading to a 25% increase in user satisfaction",
+        "Optimized Node.js and PostgreSQL micro‑services with advanced indexing and Redis caching, slashing average API latency"
       ]
     }
   ],
+  "projects": [
+    {
+      "name": "AgreeMint",
+      "skills": ["Python", "Generative AI", "HTML", "CSS", "API", "LLMs", "Visualization Dashboard"],
+      "description": [
+        "Awarded 1st Place at the Wordware (YC S24) Hackathon in San Francisco, CA. AgreeMint simplifies the review process of job offers by integrating and analyzing offer letters, job listings, and market data via Levels FYI, using modern agentic AI practices"
+      ],
+      "link": "https://app.wordware.ai/share/63e0d602-4404-46b3-a8ad-96e11f5efc7a/playground"
+    },
+    {
+      "name": "Autonomous Vehicle Accident Tracking",
+      "skills": ["Python", "SQL", "Beautiful Soup", "Web Scraping", "Python Statistical Analysis"],
+      "description": [
+        "Developed a web scraper to collect and visualize California DMV's autonomous vehicle accident data using Beautiful Soup",
+        "Designed the backend using Python and SQL for data extraction of specific text patterns, and calculated the frequency of autonomous vehicle accidents by automobile manufacturers"
+      ],
+      "link": "https://github.com/Vikyath-N/AVAT"
+    }
+  ],
   "skills": {
-    "languages": ["Python", "JavaScript/TypeScript", "Java", "C++", "SQL"],
-    "frameworks": ["React", "Next.js", "Node.js", "FastAPI", "PyTorch", "TensorFlow"],
-    "tools": ["Git", "Docker", "AWS", "Firebase", "PostgreSQL", "MongoDB"],
-    "domains": ["Machine Learning", "Web Development", "Data Analysis", "System Design"]
+    "languages": ["Python", "React", "SQL", "TypeScript", "C/C++", "Java", "Node.js", "Swift", "HTML", "JavaScript", "CSS"],
+    "frameworks": ["Supabase", "Flask", "RESTful APIs", "Tailwind CSS"],
+    "ai_ml": ["Generative AI", "LLMs", "Deep Learning", "NLP", "LangChain", "PyTorch", "TensorFlow", "Agentic AI", "MCP", "RAG", "n8n", "OpenAI API", "Grok API", "Computer Vision", "Multimodal AI"],
+    "tools": ["ETL Pipelines", "Selenium", "WebHooks", "AWS", "GCP", "Firebase", "MongoDB", "Stripe API", "Zapier", "Git", "ngrok", "PHP", "GraphQL", "Supabase Edge Functions", "Cloudflare Turnstile", "Docker", "Redis"],
+    "methodologies": ["Agile", "CI/CD", "Atlassian/Jira", "Jupyter Notebooks", "GitHub Actions"]
   }
 }
