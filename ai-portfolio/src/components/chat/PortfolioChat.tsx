@@ -130,6 +130,7 @@ export default function PortfolioChat() {
         </SheetTrigger>
         
         <SheetContent side="right" className="w-[420px] sm:w-[580px] flex flex-col p-0 bg-gray-50 dark:bg-gray-900" aria-describedby="chat-description">
+          <SheetTitle className="sr-only">Ask about Vikyath - AI Assistant</SheetTitle>
           {/* iOS-like Header */}
           <div className="flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
