@@ -42,7 +42,11 @@ export default function PortfolioChat() {
 
     try {
       // Use non-streaming endpoint for reliability
-      const base = process.env.NEXT_PUBLIC_CHAT_API_BASE_URL || "";
+      const envBase = process.env.NEXT_PUBLIC_CHAT_API_BASE_URL || "";
+      const fallbackWorker = typeof window !== 'undefined' && window.location.host.endsWith('vikyath.me')
+        ? 'https://vikyath-chat-api.v-naradasi.workers.dev'
+        : '';
+      const base = envBase || fallbackWorker;
       const url = base ? `${base.replace(/\/$/, '')}/api/ask/` : "/api/ask/";
       const res = await fetch(url, {
         method: "POST",

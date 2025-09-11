@@ -1,0 +1,14 @@
+name = "vikyath-chat-api"
+main = "./chat-worker.ts"
+compatibility_date = "2024-11-08"
+workers_dev = true
+
+[vars]
+OPENROUTER_DEFAULT_MODEL = "moonshotai/kimi-k2:free"
+
+# Attach to your domain (requires wrangler login or API token)
+routes = [
+  { pattern = "vikyath.me/api/ask*", zone_name = "vikyath.me" }
+]
+
+
