@@ -1,3 +1,7 @@
+## Chat API via Cloudflare Worker
+
+Production uses a Cloudflare Worker for chat to keep Firebase as static hosting. Set `NEXT_PUBLIC_CHAT_API_BASE_URL` to your Worker URL so the app posts to `${NEXT_PUBLIC_CHAT_API_BASE_URL}/chat/completions`.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

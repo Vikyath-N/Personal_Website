@@ -42,7 +42,9 @@ export default function PortfolioChat() {
 
     try {
       // Use non-streaming endpoint for reliability
-      const res = await fetch("/api/ask/", {
+      const base = process.env.NEXT_PUBLIC_CHAT_API_BASE_URL || "";
+      const url = base ? `${base.replace(/\/$/, '')}/api/ask/` : "/api/ask/";
+      const res = await fetch(url, {
         method: "POST",
         body: JSON.stringify({ question: currentQuestion }),
         signal: controllerRef.current.signal,

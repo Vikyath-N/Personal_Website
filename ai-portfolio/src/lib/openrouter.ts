@@ -1,5 +1,7 @@
 export const OPENROUTER_BASE_URL =
-  process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
+  process.env.NEXT_PUBLIC_CHAT_API_BASE_URL // Prefer Cloudflare Worker when provided
+    ?? process.env.OPENROUTER_BASE_URL
+    ?? "https://openrouter.ai/api/v1";
 
 const referer = process.env.OPENROUTER_SITE_URL;
 const title = process.env.OPENROUTER_APP_TITLE;

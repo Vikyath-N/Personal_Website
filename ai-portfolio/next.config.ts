@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Remove output: 'export' to enable API routes
+  // Restore static export so Firebase Hosting can deploy from `out/`
+  output: 'export',
   trailingSlash: true,
   images: {
     unoptimized: true
