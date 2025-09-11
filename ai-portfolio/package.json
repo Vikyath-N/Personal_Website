@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "next export",
+    "postbuild": "echo 'Skipping next export; using output: export'",
     "start": "next start",
     "lint": "eslint",
     "export": "next build && next export",
