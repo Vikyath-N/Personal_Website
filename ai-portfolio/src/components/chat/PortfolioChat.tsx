@@ -146,7 +146,7 @@ export default function PortfolioChat() {
           </Button>
         </SheetTrigger>
         
-        <SheetContent side="right" className="w-[420px] sm:w-[580px] flex flex-col p-0 bg-gray-50 dark:bg-gray-900" aria-describedby="chat-description">
+        <SheetContent side="right" className="w-[420px] sm:w-[580px] h-[85vh] md:h-[90vh] flex flex-col p-0 bg-gray-50 dark:bg-gray-900 min-h-0" aria-describedby="chat-description">
           <SheetTitle className="sr-only">Ask about Vikyath</SheetTitle>
           {/* iOS-like Header */}
           <div className="flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
@@ -163,7 +163,7 @@ export default function PortfolioChat() {
             Chat interface to ask questions about Vikyath&apos;s background, experience, and projects
           </div>
           
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 min-h-0 flex flex-col">
             {/* Welcome Message */}
             {messages.length === 0 && (
               <div className="p-6 space-y-6">
@@ -198,7 +198,7 @@ export default function PortfolioChat() {
             )}
 
             {/* Messages */}
-            <div ref={listRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div ref={listRef} className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-4">
               {messages.map((message, i) => (
                 <div
                   key={i}
