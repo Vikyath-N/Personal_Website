@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +25,17 @@ export default function PortfolioChat() {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const controllerRef = useRef<AbortController | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const scrollToBottom = (smooth = true) => {
+    const el = listRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: smooth ? "smooth" : "auto" });
+  };
+
+  // Auto-scroll when new content arrives or panel opens
+  useEffect(() => {
+    scrollToBottom(true);
+  }, [messages, loading, isOpen]);
 
   const streamAsk = async (questionToAsk?: string) => {
     setLoading(true);
@@ -187,7 +198,7 @@ export default function PortfolioChat() {
             )}
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div ref={listRef} className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.map((message, i) => (
                 <div
                   key={i}
