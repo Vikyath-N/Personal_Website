@@ -37,15 +37,22 @@ export default function ThemeToggle() {
   };
 
   return (
-    <label className="flex items-center gap-2 cursor-pointer">
-      <Sun className="h-4 w-4" />
-      <input 
-        type="checkbox" 
-        checked={isDark}
-        onChange={toggleTheme}
-        className="theme-controller toggle toggle-sm" 
+    <button
+      type="button"
+      role="switch"
+      aria-checked={isDark}
+      onClick={toggleTheme}
+      className="relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 bg-gray-300 dark:bg-gray-700"
+      aria-label="Toggle color theme"
+    >
+      {/* icons */}
+      <Sun className="pointer-events-none absolute left-1 h-3.5 w-3.5 text-yellow-500 transition-opacity duration-300 ${isDark ? 'opacity-0' : 'opacity-100'}" />
+      <Moon className="pointer-events-none absolute right-1 h-3.5 w-3.5 text-blue-200 transition-opacity duration-300 ${isDark ? 'opacity-100' : 'opacity-0'}" />
+      {/* knob */}
+      <span
+        className={`absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white dark:bg-gray-100 shadow-md transform transition-all duration-300 ${isDark ? 'translate-x-5' : 'translate-x-0'}`}
       />
-      <Moon className="h-4 w-4" />
-    </label>
+      <span className="sr-only">Toggle theme</span>
+    </button>
   );
 }
