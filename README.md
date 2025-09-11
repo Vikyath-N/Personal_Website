@@ -136,6 +136,28 @@ npm run deploy       # Build and deploy to Firebase
 npm run preview      # Preview production build
 ```
 
+### Cloudflare Worker (Chat API) Deploy
+
+This repo includes a Worker (`chat-worker.ts`) that powers the chat API in production. It is deployed automatically on pushes to `main` that touch any of:
+
+- `chat-worker.ts`
+- `wrangler.toml`
+- `ai-portfolio/content/**` (context data for the chat)
+
+The workflow file is `.github/workflows/deploy-worker.yml`. It uses `cloudflare/wrangler-action` and expects these repo secrets:
+
+- `CF_API_TOKEN` — API Token with scopes: Workers Scripts:Edit, Account:Read, Workers Routes:Edit
+- `CF_ACCOUNT_ID` — your Cloudflare account ID
+- `OPENROUTER_API_KEY` is stored as a Worker secret separately (set once with `wrangler secret put`)
+
+Manual deploy (optional):
+
+```bash
+npx wrangler login
+printf "<your-openrouter-key>" | npx wrangler secret put OPENROUTER_API_KEY --name vikyath-chat-api
+npx wrangler deploy
+```
+
 ## 🔧 Configuration
 
 ### Firebase Setup

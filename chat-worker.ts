@@ -4,6 +4,15 @@ export interface Env {
 }
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1';
+// Static portfolio data bundled into the Worker at build time
+// Using relative imports so wrangler/esbuild packs the JSON
+// These files live in the Next project and are source-of-truth
+// for Vikyath's portfolio content.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+// @ts-ignore - esbuild will inline JSON
+import resumeData from './ai-portfolio/content/resume.json';
+// @ts-ignore - esbuild will inline JSON
+import projectsData from './ai-portfolio/content/projects.json';
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -29,10 +38,66 @@ export default {
     if (url.pathname === '/api/ask/' || url.pathname === '/api/ask') {
       try {
         const body = await request.json().catch(() => ({}));
-        const messages = body.messages ?? [
-          { role: 'system', content: 'You are Vikyath\'s portfolio assistant.' },
-          { role: 'user', content: body.question ?? '' },
-        ];
+        let messages = body.messages as
+          | { role: 'system' | 'user' | 'assistant'; content: string }[]
+          | undefined;
+
+        // Build rich context from bundled JSON when only a question is provided
+        if (!messages && body.question) {
+          const context = `
+About Vikyath Naradasi:
+
+EDUCATION:
+${(resumeData as any).education
+  .map((edu: any) => `- ${edu.degree} from ${edu.school} (${edu.years})\n  ${edu.details.join('\n  ')}`)
+  .join('\n')}
+
+EXPERIENCE:
+${(resumeData as any).experience
+  .map((exp: any) => `- ${exp.role} at ${exp.company} (${exp.years})\n  ${exp.bullets.join('\n  ')}`)
+  .join('\n')}
+
+SKILLS:
+${Object.entries((resumeData as any).skills)
+  .map(([category, skills]) => `${(category as string).toUpperCase()}: ${(skills as string[]).join(', ')}`)
+  .join('\n')}
+
+PROJECTS:
+${(projectsData as any)
+  .map(
+    (p: any) =>
+      `- ${p.name || p.title} (${p.year ?? ''}): ${(p.summary || p.description?.[0] || '').toString()}\n  Technologies: ${(p.stack || p.skills || []).join(', ')}\n  Tags: ${(p.tags || []).join(', ')}`
+  )
+  .join('\n')}
+`;
+
+          messages = [
+            {
+              role: 'system',
+              content: `You are Vikyath's portfolio assistant. You ONLY answer questions about Vikyath Naradasi's background, skills, experience, and projects.
+
+CRITICAL RULES:
+- ONLY answer questions directly related to Vikyath's portfolio, work, education, skills, or projects
+- If asked about anything else (jokes, general topics, cooking, entertainment, etc.), politely decline and redirect to portfolio topics
+- Do NOT provide answers to non-portfolio questions, even if you know the answer
+- Always redirect back to Vikyath's portfolio content
+
+Use the following information to answer questions accurately and conversationally:
+
+${context}
+
+Guidelines:
+- Be friendly and professional
+- Answer based only on the provided information
+- If you don't have specific information about Vikyath, say so politely
+- Keep responses concise but informative
+- You can elaborate on technical details when asked
+- If asked about contact or availability, suggest they can reach out through the website
+- For any non-portfolio questions, respond with: "I'm here to help you learn about Vikyath's background, skills, experience, and projects. I don't have information about [topic]. What would you like to know about Vikyath's work instead?"`,
+            },
+            { role: 'user', content: body.question },
+          ];
+        }
         const model = body.model ?? env.OPENROUTER_DEFAULT_MODEL ?? 'openai/gpt-4o-mini';
 
         const upstream = await fetch(`${OPENROUTER_URL}/chat/completions`, {
@@ -50,7 +115,10 @@ export default {
           return new Response(text || 'OpenRouter error', { status: upstream.status, headers: buildCors({ 'Cache-Control': 'no-store', 'Content-Type': 'application/json' }) });
         }
         const json = JSON.parse(text);
-        const answer = json?.choices?.[0]?.message?.content ?? '';
+        const answer =
+          json?.choices?.[0]?.message?.content ??
+          json?.choices?.[0]?.delta?.content ??
+          '';
         return Response.json({ answer, raw: json }, { headers: buildCors({ 'Cache-Control': 'no-store' }) });
       } catch (e: any) {
         return Response.json({ error: e?.message ?? 'internal error' }, { status: 500, headers: buildCors({ 'Cache-Control': 'no-store' }) });
