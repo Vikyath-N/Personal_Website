@@ -25,6 +25,29 @@
     "media": ""
   },
   {
+    "slug": "multimodal-violence-detection",
+    "title": "AI4Peace: A Multimodal Approach for Early Detection of Violence",
+    "year": 2025,
+    "tags": [
+      "deep-learning",
+      "computer-vision",
+      "nlp",
+      "audio-processing",
+      "academic"
+    ],
+    "stack": [
+      "Python",
+      "PyTorch",
+      "Wav2Vec2",
+      "Gemini API",
+      "ResNet",
+      "LSTM",
+      "MediaPipe"
+    ],
+    "summary": "A comprehensive deep learning system for detecting violence and aggression using multiple modalities: audio, textual, facial expressions, and body pose.",
+    "repo": "https://github.com/Vikyath-N/multimodal-violence-detection"
+  },
+  {
     "slug": "ai-playground",
     "title": "AI Playground",
     "year": 2025,
