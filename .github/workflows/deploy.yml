@@ -48,13 +48,6 @@ jobs:
       env:
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-service-account.json
 
-    - name: Deploy to Cloudflare Pages
-      if: github.event_name == 'push'
-      run: npx wrangler pages deploy ai-portfolio/out --project-name=vikyath-me
-      env:
-        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
     - name: Smoke test production (vikyath.me)
       if: github.event_name == 'push'
       shell: bash
