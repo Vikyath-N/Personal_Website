@@ -1,5 +1,30 @@
 [
   {
+    "slug": "gold-price-forecasting",
+    "title": "Multimodal Gold Price Forecasting with Deep Learning",
+    "year": 2025,
+    "tags": [
+      "machine-learning",
+      "deep-learning",
+      "data-science",
+      "time-series"
+    ],
+    "stack": [
+      "Python",
+      "TensorFlow",
+      "PyTorch",
+      "Scikit-learn",
+      "GitHub Actions",
+      "JavaScript",
+      "HTML5",
+      "CSS3"
+    ],
+    "summary": "A comprehensive multimodal approach to gold price forecasting using state-of-the-art deep learning architectures. By leveraging multiple economic indicators and advanced time series models, we achieve robust predictions for gold futures prices.",
+    "repo": "https://github.com/Vikyath-N/Gold-Price-Forecasting-ML",
+    "demo": "https://vikyath-n.github.io/Gold-Price-Forecasting-ML/",
+    "media": ""
+  },
+  {
     "slug": "ai-playground",
     "title": "AI Playground",
     "year": 2025,
