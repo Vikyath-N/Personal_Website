@@ -95,7 +95,16 @@ export default function ProjectCard({ p }: { p: Project }) {
       {p.media && (
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="flex items-center justify-center h-full">
-            <div className="text-sm text-muted-foreground">Media preview would go here</div>
+            <video 
+              className="w-full h-full object-cover rounded-lg" 
+              autoPlay 
+              muted 
+              loop 
+              playsInline
+            >
+              <source src={p.media} type="video/mp4" />
+              <div className="text-sm text-muted-foreground">Media preview not available</div>
+            </video>
           </div>
         </div>
       )}

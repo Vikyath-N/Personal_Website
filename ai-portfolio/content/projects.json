@@ -54,9 +54,8 @@
     "tags": ["ai", "frontend", "computer-vision"],
     "stack": ["Next.js", "TypeScript", "TensorFlow.js", "WebRTC"],
     "summary": "Interactive AI demos featuring real-time image classification, object detection, and camera integration. Built with TensorFlow.js for client-side ML inference.",
-    "repo": "https://github.com/vikyath/ai-playground",
-    "demo": "/playground",
-    "media": "/media/ai-playground.mp4"
+    "repo": "https://github.com/Vikyath-N/ai-playground",
+    "demo": "/playground"
   },
   {
     "slug": "portfolio-site",
@@ -65,52 +64,45 @@
     "tags": ["web", "design", "ai"],
     "stack": ["Next.js", "React", "Tailwind CSS", "daisyUI", "OpenAI"],
     "summary": "Modern portfolio with AI chat assistant, interactive resume, and dynamic project showcases. Features real-time AI responses about my background and work.",
-    "repo": "https://github.com/vikyath/portfolio",
-    "demo": "/",
-    "media": "/media/portfolio.mp4"
+    "repo": "https://github.com/Vikyath-N/Personal_Website",
+    "demo": "/"
   },
   {
-    "slug": "ml-research-tool",
-    "title": "ML Interpretability Suite",
+    "slug": "cloudy-spotify",
+    "title": "Cloudy Spotify - Weather-Based Music Recommendation",
     "year": 2024,
-    "tags": ["research", "ml", "data-science"],
-    "stack": ["Python", "PyTorch", "Streamlit", "SHAP", "LIME"],
-    "summary": "Comprehensive tool for analyzing and visualizing machine learning model decisions. Implements multiple interpretability techniques for deep learning models.",
-    "repo": "https://github.com/vikyath/ml-interpretability",
-    "demo": "https://ml-interpretability-demo.vercel.app",
-    "media": "/media/research.mp4"
+    "tags": ["ai", "neural-networks", "music", "weather", "reinforcement-learning"],
+    "stack": ["C++", "React", "TypeScript", "WebAssembly", "Eigen", "D3.js", "Three.js"],
+    "summary": "Advanced neural network system that learns music preferences based on weather patterns using Deep Q-Network reinforcement learning. Features real-time neural network visualization and C++ engine compiled to WebAssembly for high performance.",
+    "repo": "https://github.com/Vikyath-N/Cloudy_Spotify",
+    "demo": "https://vikyath-n.github.io/Cloudy_Spotify/"
   },
   {
-    "slug": "real-time-chat",
-    "title": "Real-Time Chat Platform",
+    "slug": "avat",
+    "title": "AVAT - Autonomous Vehicle Accident Tracking",
     "year": 2024,
-    "tags": ["fullstack", "realtime", "websockets"],
-    "stack": ["Node.js", "Socket.io", "React", "MongoDB", "Redis"],
-    "summary": "Scalable real-time messaging platform with features like message encryption, file sharing, and presence indicators. Handles 1000+ concurrent users.",
-    "repo": "https://github.com/vikyath/realtime-chat",
-    "demo": "https://chat-demo.herokuapp.com",
-    "media": "/media/chat.mp4"
+    "tags": ["data-science", "web-scraping", "automation", "python"],
+    "stack": ["Python", "BeautifulSoup", "Pandas", "Requests", "Data Analysis"],
+    "summary": "Python application that scrapes and extracts data from the California DMV website to calculate the frequency of autonomous vehicle accidents in 2023 by company. Provides insights into AV safety trends and regulatory compliance.",
+    "repo": "https://github.com/Vikyath-N/AVAT"
   },
   {
-    "slug": "data-visualization",
-    "title": "Interactive Data Dashboard",
+    "slug": "landscape-change-detection",
+    "title": "Landscape Change Detection",
     "year": 2024,
-    "tags": ["data-viz", "analytics", "frontend"],
-    "stack": ["D3.js", "React", "Python", "FastAPI", "PostgreSQL"],
-    "summary": "Dynamic data visualization platform with real-time updates, custom chart types, and advanced filtering. Processes millions of data points efficiently.",
-    "repo": "https://github.com/vikyath/data-dashboard",
-    "demo": "https://data-dashboard-demo.netlify.app",
-    "media": "/media/dashboard.mp4"
+    "tags": ["computer-vision", "environmental", "python", "opencv"],
+    "stack": ["Python", "OpenCV", "NumPy", "Matplotlib", "Image Processing"],
+    "summary": "Motion detection library designed to detect movement and changes in images. Applied to calculate water level changes at California lakes and reservoirs, providing environmental monitoring capabilities.",
+    "repo": "https://github.com/Vikyath-N/Landscape_Change_Detection"
   },
   {
-    "slug": "blockchain-explorer",
-    "title": "Blockchain Transaction Explorer",
-    "year": 2023,
-    "tags": ["blockchain", "web3", "ethereum"],
-    "stack": ["Web3.js", "React", "Node.js", "Ethereum", "IPFS"],
-    "summary": "Comprehensive blockchain explorer with transaction tracking, smart contract interaction, and NFT marketplace integration. Built for Ethereum mainnet.",
-    "repo": "https://github.com/vikyath/blockchain-explorer",
-    "demo": "https://blockchain-explorer.vercel.app",
-    "media": "/media/blockchain.mp4"
+    "slug": "mcp-project",
+    "title": "MCP Integration Project",
+    "year": 2025,
+    "tags": ["mcp", "ai", "integration", "in-progress"],
+    "stack": ["TypeScript", "Node.js", "MCP Protocol", "AI Integration"],
+    "summary": "Advanced Model Context Protocol (MCP) integration project currently in development. This project will demonstrate seamless AI model communication and context sharing capabilities.",
+    "repo": "",
+    "demo": ""
   }
 ]
