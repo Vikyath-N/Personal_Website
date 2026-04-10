@@ -1,6 +1,7 @@
 export interface Env {
   OPENROUTER_API_KEY: string;
   OPENROUTER_DEFAULT_MODEL?: string;
+  OPENROUTER_FREE_MODELS_GENERAL?: string;
 }
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1';
@@ -98,7 +99,12 @@ Guidelines:
             { role: 'user', content: body.question },
           ];
         }
-        const model = body.model ?? env.OPENROUTER_DEFAULT_MODEL ?? 'openai/gpt-4o-mini';
+        // Build model list: client-supplied model first, then the configured fallback chain
+        const defaultChain = (env.OPENROUTER_FREE_MODELS_GENERAL ?? env.OPENROUTER_DEFAULT_MODEL ?? 'google/gemma-4-31b-it:free')
+          .split(',').map(s => s.trim()).filter(Boolean);
+        const models = body.model
+          ? [body.model, ...defaultChain.filter((m: string) => m !== body.model)]
+          : defaultChain;
 
         const upstream = await fetch(`${OPENROUTER_URL}/chat/completions`, {
           method: 'POST',
@@ -108,7 +114,8 @@ Guidelines:
             'HTTP-Referer': 'https://vikyath.me',
             'X-Title': 'Vikyath Portfolio',
           },
-          body: JSON.stringify({ model, messages, stream: false }),
+          // Use OpenRouter's native fallback routing across the model list
+          body: JSON.stringify({ models, route: 'fallback', messages, stream: false }),
         });
         const text = await upstream.text();
         if (!upstream.ok) {

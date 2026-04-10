@@ -5,6 +5,7 @@ workers_dev = true
 
 [vars]
 OPENROUTER_DEFAULT_MODEL = "google/gemma-4-31b-it:free"
+OPENROUTER_FREE_MODELS_GENERAL = "google/gemma-4-31b-it:free, google/gemma-4-26b-a4b-it:free, liquid/lfm-2.5-1.2b-instruct:free"
 
 # Attach to your domain (requires wrangler login or API token)
 routes = [

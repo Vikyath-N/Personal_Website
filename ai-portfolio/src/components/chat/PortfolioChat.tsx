@@ -51,24 +51,33 @@ export default function PortfolioChat() {
     controllerRef.current?.abort();
     controllerRef.current = new AbortController();
 
+    // Ordered list of free models to try — first available wins
+    const MODEL_CHAIN = [
+      "google/gemma-4-31b-it:free",
+      "google/gemma-4-26b-a4b-it:free",
+      "liquid/lfm-2.5-1.2b-instruct:free",
+    ];
+
     try {
-      // Use non-streaming endpoint for reliability
       const envBase = process.env.NEXT_PUBLIC_CHAT_API_BASE_URL || "";
       const fallbackWorker = typeof window !== 'undefined' && window.location.host.endsWith('vikyath.me')
         ? 'https://vikyath-chat-api.v-naradasi.workers.dev'
         : '';
       const base = envBase || fallbackWorker;
       const url = base ? `${base.replace(/\/$/, '')}/api/ask/` : "/api/ask/";
-      const res = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify({
-          question: currentQuestion,
-          // Explicit model override — bypasses the worker's cached default
-          model: "google/gemma-4-31b-it:free",
-        }),
-        signal: controllerRef.current.signal,
-        headers: { "Content-Type": "application/json" }
-      });
+
+      // Try each model in order; skip to next on 429 rate-limit
+      let res: Response | null = null;
+      for (const model of MODEL_CHAIN) {
+        res = await fetch(url, {
+          method: "POST",
+          body: JSON.stringify({ question: currentQuestion, model }),
+          signal: controllerRef.current.signal,
+          headers: { "Content-Type": "application/json" },
+        });
+        if (res.status !== 429) break; // success or non-retryable error
+      }
+      if (!res) throw new Error("No response");
 
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
