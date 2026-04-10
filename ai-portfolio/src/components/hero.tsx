@@ -94,7 +94,8 @@ export default function Hero() {
                 alt="Vikyath Naradasi"
                 fill
                 sizes="(max-width: 768px) 176px, 224px"
-                className="object-cover object-top"
+                className="object-cover"
+                style={{ objectPosition: "center 22%" }}
                 priority
               />
               {/* Subtle gradient overlay on hover */}
