@@ -95,7 +95,7 @@ export default function Hero() {
                 fill
                 sizes="(max-width: 768px) 176px, 224px"
                 className="object-cover"
-                style={{ objectPosition: "center 22%" }}
+                style={{ objectPosition: "center 38%" }}
                 priority
               />
               {/* Subtle gradient overlay on hover */}
