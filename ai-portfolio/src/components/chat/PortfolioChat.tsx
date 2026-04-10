@@ -61,7 +61,11 @@ export default function PortfolioChat() {
       const url = base ? `${base.replace(/\/$/, '')}/api/ask/` : "/api/ask/";
       const res = await fetch(url, {
         method: "POST",
-        body: JSON.stringify({ question: currentQuestion }),
+        body: JSON.stringify({
+          question: currentQuestion,
+          // Explicit model override — bypasses the worker's cached default
+          model: "google/gemma-4-31b-it:free",
+        }),
         signal: controllerRef.current.signal,
         headers: { "Content-Type": "application/json" }
       });
